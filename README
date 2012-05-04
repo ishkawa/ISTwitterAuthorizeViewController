@@ -1,0 +1,7 @@
+1.clone ishkawa/ISNetwork and atebits/OAuthCore.
+2.add files to your project.
+3.specify CALLBACK_HOST, CONSUMER_KEY and CONSUMER_KEY_SECRET in prefix.pch.
+4.show view controller
+    example: 
+        ISTwitterAuthorizeViewController *viewController = [[ISTwitterAuthorizeViewController alloc] init];
+        [self presentModalViewController:viewController animated:YES];
