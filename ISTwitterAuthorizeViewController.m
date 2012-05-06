@@ -52,13 +52,6 @@
     [super dealloc];
 }
 
-#pragma mark - manage view orientation
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return UIInterfaceOrientationIsLandscape(interfaceOrientation);
-}
-
 #pragma mark - action
 
 - (void)loadAuthorizePage
@@ -110,7 +103,7 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSArray *accounts = [defaults objectForKey:@"twitter_accounts"];
-    if ([accounts isKindOfClass:[NSArray class]]) {
+    if (![accounts isKindOfClass:[NSArray class]]) {
         accounts = [NSArray array];
     }
     NSMutableDictionary *account = [NSMutableDictionary dictionary];
@@ -120,6 +113,7 @@
     [account setValue:[dictionary objectForKey:@"oauth_token_secret"] forKey:@"oauth_token_secret"];
     [defaults setObject:[accounts arrayByAddingObject:account] forKey:@"twitter_accounts"];
     [defaults synchronize];
+    [self dismiss];
 }
 
 - (void)dismiss
