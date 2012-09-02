@@ -61,21 +61,21 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     [request setOAuthHeader];
     
-    ISNetworkOperation *operation = [ISNetworkOperation operationWithRequest:request];
-    [operation enqueueWithHandler:^(NSURLResponse *response, id object, NSError *error) {
-        if (error) {
-            NSLog(@"error: %@", error);
-            return;
-        }
-        NSString *string = [[[NSString alloc] initWithData:object encoding:NSUTF8StringEncoding] autorelease];
-        NSDictionary *dictionary = [NSDictionary dictionaryWithURLQuery:string];
-        NSString *token = [dictionary objectForKey:@"oauth_token"];
-        NSString *lang = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *URLString = [AUTHORIZE_URL stringByAppendingFormat:@"?oauth_token=%@&lang=%@", token, lang];
-        NSURL *URL = [NSURL URLWithString:URLString];
-        NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-        [self.webView loadRequest:request];
-    }];
+    [ISNetworkClient sendRequest:request
+                         handler:^(NSHTTPURLResponse *response, id object, NSError *error) {
+                             if (error) {
+                                 NSLog(@"error: %@", error);
+                                 return;
+                             }
+                             NSString *string = [[[NSString alloc] initWithData:object encoding:NSUTF8StringEncoding] autorelease];
+                             NSDictionary *dictionary = [NSDictionary dictionaryWithURLQuery:string];
+                             NSString *token = [dictionary objectForKey:@"oauth_token"];
+                             NSString *lang = [[NSLocale preferredLanguages] objectAtIndex:0];
+                             NSString *URLString = [AUTHORIZE_URL stringByAppendingFormat:@"?oauth_token=%@&lang=%@", token, lang];
+                             NSURL *URL = [NSURL URLWithString:URLString];
+                             NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+                             [self.webView loadRequest:request];
+                         }];
 }
 
 - (void)verifyAccessToken:(NSString *)accessToken verifier:(NSString *)verifier
@@ -86,17 +86,17 @@
                          accessTokenSecret:@""
                                   verifier:verifier];
     
-    ISNetworkOperation *operation = [ISNetworkOperation operationWithRequest:request];
-    [operation enqueueWithHandler:^(NSURLResponse *response, id object, NSError *error) {
-        [self.indicatorView stopAnimating];
-        if (error) {
-            NSLog(@"error: %@", error);
-            return;
-        }
-        NSString *string = [[[NSString alloc] initWithData:object encoding:NSUTF8StringEncoding] autorelease];
-        NSDictionary *dictionary = [NSDictionary dictionaryWithURLQuery:string];
-        [self registerUserWithDictionary:dictionary];
-    }];
+    [ISNetworkClient sendRequest:request
+                         handler:^(NSHTTPURLResponse *response, id object, NSError *error) {
+                             [self.indicatorView stopAnimating];
+                             if (error) {
+                                 NSLog(@"error: %@", error);
+                                 return;
+                             }
+                             NSString *string = [[[NSString alloc] initWithData:object encoding:NSUTF8StringEncoding] autorelease];
+                             NSDictionary *dictionary = [NSDictionary dictionaryWithURLQuery:string];
+                             [self registerUserWithDictionary:dictionary];
+                         }];
 }
 
 - (void)registerUserWithDictionary:(NSDictionary *)dictionary
