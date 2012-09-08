@@ -70,8 +70,7 @@
                              NSString *string = [[[NSString alloc] initWithData:object encoding:NSUTF8StringEncoding] autorelease];
                              NSDictionary *dictionary = [NSDictionary dictionaryWithURLQuery:string];
                              NSString *token = [dictionary objectForKey:@"oauth_token"];
-                             NSString *lang = [[NSLocale preferredLanguages] objectAtIndex:0];
-                             NSString *URLString = [AUTHORIZE_URL stringByAppendingFormat:@"?oauth_token=%@&lang=%@", token, lang];
+                             NSString *URLString = [AUTHORIZE_URL stringByAppendingFormat:@"?oauth_token=%@", token];
                              NSURL *URL = [NSURL URLWithString:URLString];
                              NSURLRequest *request = [NSURLRequest requestWithURL:URL];
                              [self.webView loadRequest:request];
